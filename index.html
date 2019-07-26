@@ -8,11 +8,26 @@
     <script src="https://unpkg.com/aframe-physics-system@1.4.0/dist/aframe-physics-system.min.js"></script>
   </head>
   <body>
+    <img
+      src="https://img.gs/bbdkhfbzkk/stretch/https://i.imgur.com/25P1geh.png"
+      id="grid"
+      crossorigin="anonymous">
     <a-scene physics log="ready to log">
-      <a-box position="-1 4.5 -3" rotation="0 45 0" color="#4CC3D9" dynamic-body></a-box>
+      <a-box position="-1 0.75 -3" rotation="0 45 0" color="#4CC3D9"></a-box>
       <a-sphere position="0 1.25 -5" radius="1.25" color="#EF2D5E"></a-sphere>
       <a-cylinder position="1 0.75 -3" radius="0.5" height="1.5" color="#FFC65D"></a-cylinder>
-      <a-plane position="0 0 -4" rotation="-90 0 0" width="4" height="4" color="#7BC8A4" static-body></a-plane>
+      <a-plane
+        width="10000"
+        height="10000"
+        rotation="-90 0 0"
+        material="src: #grid; repeat: 10000 10000; transparent: true"
+      />
+      <a-plane
+        width="10000"
+        height="10000"
+        rotation="0 0 0"
+        color="#7BC8A4"
+      />
       <a-sky color="#ECECEC"></a-sky>
     </a-scene>
   </body>
