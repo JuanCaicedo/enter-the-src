@@ -4,7 +4,7 @@ import './primitives/a-file';
 import treeFixture from './tree-fixture';
 import createElement from './create-element';
 
-const displayBox = ({ sceneEl }) => {
+const Box = () => {
   const newBox = createElement('a-box', {
     position: { x: -1, y: 1, z: -3 },
     color: '#4CC3D9',
@@ -13,11 +13,10 @@ const displayBox = ({ sceneEl }) => {
     width: 3,
     material: 'side: double;'
   });
-
-  sceneEl.appendChild(newBox);
+  return newBox;
 };
 
-const fileElement = ({ file, offset }) => {
+const File = ({ file, offset }) => {
   const fileEl = createElement('a-file', {
     color: 'red',
     radius: 0.2,
@@ -27,7 +26,7 @@ const fileElement = ({ file, offset }) => {
   return fileEl;
 };
 
-const createLayout = () => {
+const Layout = () => {
   const layout = createElement('a-entity', {
     layout: { type: 'circle', radius: 1 },
     rotation: { x: 90, y: 0, z: 0 },
@@ -40,13 +39,14 @@ aframe.registerComponent('load-tree', {
   schema: { type: 'string' },
   init() {
     const sceneEl = document.querySelector('a-scene');
-    displayBox({ sceneEl });
+    const box = Box({ sceneEl });
+    sceneEl.appendChild(box);
 
     const fileEls = treeFixture.tree.children
       .filter(({ type }) => type === 'file')
-      .map((file, offset) => fileElement({ file, sceneEl, offset }));
+      .map((file, offset) => File({ file, sceneEl, offset }));
 
-    const layout = createLayout();
+    const layout = Layout();
     fileEls.forEach(fileEl => layout.appendChild(fileEl));
 
     sceneEl.appendChild(layout);
