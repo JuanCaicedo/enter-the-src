@@ -4,6 +4,14 @@ import treeFixture from './tree-fixture';
 
 const meshMixin = primitives.getMeshMixin();
 
+const createElement = (type, props) => {
+  const el = document.createElement(type);
+  for (let [key, value] of Object.entries(props)) {
+    el.setAttribute(key, value);
+  }
+  return el;
+};
+
 aframe.registerPrimitive(
   'a-file',
   utils.extendDeep({}, meshMixin, {
@@ -17,31 +25,34 @@ aframe.registerPrimitive(
 );
 
 const displayBox = ({ sceneEl }) => {
-  const newBox = document.createElement('a-box');
-  newBox.setAttribute('position', { x: -1, y: 1, z: -3 });
-  newBox.setAttribute('color', '#4CC3D9');
-  newBox.setAttribute('rotation', { x: 0, y: 10, z: 0 });
-  newBox.setAttribute('height', 2);
-  newBox.setAttribute('width', 3);
-  newBox.setAttribute('material', 'side: double;');
+  const newBox = createElement('a-box', {
+    position: { x: -1, y: 1, z: -3 },
+    color: '#4CC3D9',
+    rotation: { x: 0, y: 10, z: 0 },
+    height: 2,
+    width: 3,
+    material: 'side: double;'
+  });
 
   sceneEl.appendChild(newBox);
 };
 
 const fileElement = ({ file, offset }) => {
-  const fileEl = document.createElement('a-file');
-  fileEl.setAttribute('position', { x: offset, y: 1, z: -1 });
-  fileEl.setAttribute('color', 'red');
-  fileEl.setAttribute('rotation', { x: 0, y: 0, z: 0 });
-  fileEl.setAttribute('radius', 0.2);
+  const fileEl = createElement('a-file', {
+    color: 'red',
+    radius: 0.2,
+    rotation: { x: 0, y: 0, z: 0 },
+    position: { x: offset, y: 1, z: -1 }
+  });
   return fileEl;
 };
 
 const createLayout = () => {
-  const layout = document.createElement('a-entity');
-  layout.setAttribute('layout', { type: 'circle', radius: 1 });
-  layout.setAttribute('rotation', { x: 90, y: 0, z: 0 });
-  layout.setAttribute('position', { x: 0, y: 1, z: -2 });
+  const layout = createElement('a-entity', {
+    layout: { type: 'circle', radius: 1 },
+    rotation: { x: 90, y: 0, z: 0 },
+    position: { x: 0, y: 1, z: -2 }
+  });
   return layout;
 };
 
