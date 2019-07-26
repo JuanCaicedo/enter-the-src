@@ -1,28 +1,8 @@
-import aframe, { utils, primitives } from 'aframe';
+import aframe from 'aframe';
 import 'aframe-layout-component';
+import './primitives/a-file';
 import treeFixture from './tree-fixture';
-
-const meshMixin = primitives.getMeshMixin();
-
-const createElement = (type, props) => {
-  const el = document.createElement(type);
-  for (let [key, value] of Object.entries(props)) {
-    el.setAttribute(key, value);
-  }
-  return el;
-};
-
-aframe.registerPrimitive(
-  'a-file',
-  utils.extendDeep({}, meshMixin, {
-    defaultComponents: {
-      geometry: { primitive: 'sphere' }
-    },
-    mappings: {
-      radius: 'geometry.radius'
-    }
-  })
-);
+import createElement from './create-element';
 
 const displayBox = ({ sceneEl }) => {
   const newBox = createElement('a-box', {
