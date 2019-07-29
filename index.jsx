@@ -1,5 +1,6 @@
 import * as React from 'jsx-dom';
 import aframe from 'aframe';
+import * as R from 'ramda';
 import 'aframe-layout-component';
 import 'aframe-text-geometry-component';
 import './primitives/a-file';
@@ -29,8 +30,9 @@ const Cylinder = ({ children }) => (
     height={4}
     radius={10}
     material={{ side: 'double' }}
-    position={{ x: 0, y: 0, z: -5 }}
+    position={{ x: 0, y: 0, z: -3 }}
     center-y
+    grow-radius-for-children
   >
     {children}
   </a-cylinder>
@@ -72,6 +74,42 @@ aframe.registerComponent('center-y', {
       const bbox = new THREE.Box3().setFromObject(this.el.object3D);
       const offset = (bbox.max.y - bbox.min.y) / 2;
       mesh.position.set(0, offset, 0);
+    }, 0);
+  }
+});
+
+function distanceBetweenPoints(v1, v2) {
+  const dx = v1.x - v2.x;
+  const dz = v1.z - v2.z;
+
+  return Math.sqrt(dx * dx + dz * dz);
+}
+
+aframe.registerComponent('grow-radius-for-children', {
+  update() {
+    // Set timeout because we need to wait for this to be loaded
+    setTimeout(() => {
+      const mesh = this.el.getObject3D('mesh');
+      const bbox = new THREE.Box3().setFromObject(this.el.object3D);
+      const center = {
+        x: (bbox.min.x + bbox.max.x) / 2,
+        z: (bbox.min.z + bbox.max.z) / 2
+      };
+
+      const furthestDirection = R.pipe(
+        R.map(child => {
+          const mesh = child.getObject3D('mesh');
+          const bbox = new THREE.Box3().setFromObject(child.object3D);
+          return [
+            { x: bbox.min.x, z: bbox.min.z },
+            { x: bbox.max.x, z: bbox.max.z }
+          ];
+        }),
+        R.flatten,
+        R.map(point => distanceBetweenPoints(center, point)),
+        R.reduce(R.max, 0)
+      )(this.el.children);
+      this.el.setAttribute('radius', furthestDirection + 1);
     }, 0);
   }
 });

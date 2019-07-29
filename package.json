@@ -14,6 +14,7 @@
     "aframe-layout-component": "^5.3.0",
     "aframe-text-geometry-component": "^0.5.1",
     "jsx-dom": "^6.3.1",
-    "parcel-bundler": "^1.12.3"
+    "parcel-bundler": "^1.12.3",
+    "ramda": "^0.26.1"
   }
 }
