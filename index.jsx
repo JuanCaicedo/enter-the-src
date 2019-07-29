@@ -5,19 +5,6 @@ import './primitives/a-file';
 import treeFixture from './tree-fixture';
 import createElement from './create-element';
 
-const Box = () => {
-  return (
-    <a-box
-      position={{ x: -1, y: 1, z: -3 }}
-      color="#4CC3D9"
-      rotation={{ x: 0, y: 10, z: 0 }}
-      height={2}
-      width={3}
-      material="side: double;"
-    />
-  );
-};
-
 const File = ({ file, offset }) => {
   return <a-file color="red" radius={0.2} rotation={{ x: 0, y: 0, z: 0 }} />;
 };
@@ -34,18 +21,33 @@ const Layout = ({ children }) => {
   );
 };
 
+const Cylinder = ({ children }) => (
+  <a-cylinder
+    color="cyan"
+    height={4}
+    radius={10}
+    material={{ side: 'double' }}
+    position={{ x: 0, y: 0, z: -5 }}
+  >
+    {children}
+  </a-cylinder>
+);
+
+const Directory = ({ files, name }) => (
+  <Cylinder>
+    <Layout>{files.map(file => <File file={file} />)}</Layout>
+  </Cylinder>
+);
+
 aframe.registerComponent('load-tree', {
   schema: { type: 'string' },
   init() {
     const sceneEl = document.querySelector('a-scene');
-    sceneEl.appendChild(<Box />);
 
-    const files = treeFixture.tree.children.filter(
-      ({ type }) => type === 'file'
-    );
+    const directory = treeFixture.tree;
+    const files = directory.children.filter(({ type }) => type === 'file');
+    const name = directory.name;
 
-    sceneEl.appendChild(
-      <Layout>{files.map(file => <File file={file} />)}</Layout>
-    );
+    sceneEl.appendChild(<Directory files={files} name={name} />);
   }
 });
