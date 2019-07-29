@@ -56,9 +56,9 @@ aframe.registerComponent('center-x', {
   update() {
     // Set timeout because we need to wait for this to be loaded
     setTimeout(() => {
-      let mesh = this.el.getObject3D('mesh');
-      let bbox = new THREE.Box3().setFromObject(this.el.object3D);
-      let offset = (bbox.min.x - bbox.max.x) / 2;
+      const mesh = this.el.getObject3D('mesh');
+      const bbox = new THREE.Box3().setFromObject(this.el.object3D);
+      const offset = (bbox.min.x - bbox.max.x) / 2;
       mesh.position.set(offset, 0, 0);
     }, 0);
   }
@@ -68,9 +68,9 @@ aframe.registerComponent('center-y', {
   update() {
     // Set timeout because we need to wait for this to be loaded
     setTimeout(() => {
-      let mesh = this.el.getObject3D('mesh');
-      let bbox = new THREE.Box3().setFromObject(this.el.object3D);
-      let offset = (bbox.max.y - bbox.min.y) / 2;
+      const mesh = this.el.getObject3D('mesh');
+      const bbox = new THREE.Box3().setFromObject(this.el.object3D);
+      const offset = (bbox.max.y - bbox.min.y) / 2;
       mesh.position.set(0, offset, 0);
     }, 0);
   }
