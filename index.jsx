@@ -10,15 +10,18 @@ const File = ({ file, offset }) => (
   <a-file color="red" radius={0.2} rotation={{ x: 0, y: 0, z: 0 }} />
 );
 
-const Layout = ({ children }) => (
-  <a-entity
-    layout={{ type: 'circle', radius: 1 }}
-    rotation={{ x: 90, y: 0, z: 0 }}
-    position={{ x: 0, y: 1, z: 0 }}
-  >
-    {children}
-  </a-entity>
-);
+const Layout = ({ children }) => {
+  const radius = children[0].length / 2;
+  return (
+    <a-entity
+      layout={{ type: 'circle', radius }}
+      rotation={{ x: 90, y: 0, z: 0 }}
+      position={{ x: 0, y: 1, z: 0 }}
+    >
+      {children}
+    </a-entity>
+  );
+};
 
 const Cylinder = ({ children }) => (
   <a-cylinder
