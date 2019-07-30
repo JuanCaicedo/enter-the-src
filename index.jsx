@@ -8,7 +8,17 @@ import treeFixture from './tree-fixture';
 import createElement from './create-element';
 
 const File = ({ file, offset }) => (
-  <a-file color="red" radius={0.2} rotation={{ x: 0, y: 0, z: 0 }} />
+  <a-entity>
+    <a-entity
+      center-x
+      text-geometry={{ value: `${file.name}`, size: 0.15 }}
+      material={{ color: 'green' }}
+      position={{ x: 0, y: 0, z: -0.3 }}
+      rotation={{ x: -90, y: 0, z: 0 }}
+    />
+
+    <a-file color="red" radius={0.2} />
+  </a-entity>
 );
 
 const Layout = ({ children }) => {
@@ -30,7 +40,7 @@ const Cylinder = ({ children }) => (
     height={4}
     radius={10}
     material={{ side: 'double' }}
-    position={{ x: 0, y: 0, z: -3 }}
+    position={{ x: 0, y: -0.22, z: -3 }}
     center-y
     grow-radius-for-children
   >
@@ -43,7 +53,7 @@ const Name = ({ name }) => (
     center-x
     text-geometry={{ value: `${name}/` }}
     material={{ color: 'blue' }}
-    position={{ x: 0, y: 1, z: 0 }}
+    position={{ x: 0, y: 2, z: 0 }}
   />
 );
 
@@ -73,7 +83,9 @@ aframe.registerComponent('center-y', {
       const mesh = this.el.getObject3D('mesh');
       const bbox = new THREE.Box3().setFromObject(this.el.object3D);
       const offset = (bbox.max.y - bbox.min.y) / 2;
-      mesh.position.set(0, offset, 0);
+      // Subtracting a little so that the cylinder will be lower than the floor.
+      // This is probably not good in that it messes up other math.
+      mesh.position.set(0, offset - 0.22, 0);
     }, 0);
   }
 });
