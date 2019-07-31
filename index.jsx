@@ -12,7 +12,7 @@ const File = ({ file, offset }) => (
     <a-entity
       center-x
       text-geometry={{ value: `${file.name}`, size: 0.15 }}
-      material={{ color: 'green' }}
+      material={{ color: 'greenyellow' }}
       position={{ x: 0, y: 0, z: -0.3 }}
       rotation={{ x: -90, y: 0, z: 0 }}
     />
@@ -37,12 +37,12 @@ const Layout = ({ children }) => {
 const Cylinder = ({ children }) => (
   <a-cylinder
     color="cyan"
-    height={4}
+    height={1}
     radius={10}
     material={{ side: 'double' }}
-    position={{ x: 0, y: -0.22, z: -3 }}
-    center-y
+    position={{ x: 0, y: -1, z: -5 }}
     grow-radius-for-children
+    src="https://i.imgur.com/mYmmbrp.jpg"
   >
     {children}
   </a-cylinder>
