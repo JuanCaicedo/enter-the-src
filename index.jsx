@@ -22,10 +22,9 @@ const File = ({ file, offset }) => (
 );
 
 const Layout = ({ children }) => {
-  const radius = children[0].length / 2;
   return (
     <a-entity
-      layout={{ type: 'circle', radius }}
+      layout={{ type: 'circle', radius: 3 }}
       rotation={{ x: 90, y: 0, z: 0 }}
       position={{ x: 0, y: 1, z: 0 }}
     >
@@ -38,7 +37,7 @@ const Cylinder = ({ children }) => (
   <a-cylinder
     color="cyan"
     height={1}
-    radius={10}
+    radius={5}
     material={{ side: 'double' }}
     position={{ x: 0, y: -1, z: -5 }}
     src="https://i.imgur.com/mYmmbrp.jpg"
