@@ -55,22 +55,21 @@ const Name = ({ name }) => (
 
 const DirectoryWithLink = ({ name, index, total }) => {
   const degreesPerIndex = 360 / total;
-  const spin = degreesPerIndex * index + 90;
+  const spin = 360 - 90 - degreesPerIndex * index;
   return (
-    <a-entity>
+    <a-entity rotation={{ x: 0, y: spin, z: 0 }}>
       <a-box
         height={1}
         width={1}
         depth={10}
         material={{ color: 'darkcyan' }}
-        rotation={{ x: 0, y: spin, z: 0 }}
-        position={{ x: 0, y: -1, z: -0.3 }}
+        position={{ x: 0, y: -1, z: 0 }}
       />
       <a-entity
         center-x
-        text-geometry={{ value: `${name}/`, size: 0.15 }}
+        text-geometry={{ value: `${name}/`, size: 0.5 }}
         material={{ color: 'fuchsia' }}
-        position={{ x: 0, y: 0, z: -0.3 }}
+        position={{ x: 0, y: 0.5, z: 5 }}
         rotation={{ x: 0, y: 0, z: 0 }}
       />
     </a-entity>
