@@ -13,19 +13,17 @@ const File = ({ file, offset }) => (
       center-x
       text-geometry={{ value: `${file.name}`, size: 0.15 }}
       material={{ color: 'greenyellow' }}
-      position={{ x: 0, y: 0, z: -0.3 }}
-      rotation={{ x: -90, y: 0, z: 0 }}
+      position={{ x: 0, y: 0.3, z: 0 }}
     />
 
     <a-file color="red" radius={0.2} />
   </a-entity>
 );
 
-const Layout = ({ children }) => {
+const Layout = ({ children, radius = 3 }) => {
   return (
     <a-entity
-      layout={{ type: 'circle', radius: 3 }}
-      rotation={{ x: 90, y: 0, z: 0 }}
+      layout={{ type: 'circle', radius, plane: 'xz' }}
       position={{ x: 0, y: 1, z: 0 }}
     >
       {children}
@@ -55,12 +53,47 @@ const Name = ({ name }) => (
   />
 );
 
-const Directory = ({ files, name }) => (
-  <Cylinder>
-    <Name name={name} />
-    <Layout>{files.map(file => <File file={file} />)}</Layout>
-  </Cylinder>
-);
+const DirectoryWithLink = ({ name, index, total }) => {
+  const degreesPerIndex = 360 / total;
+  const spin = degreesPerIndex * index + 90;
+  return (
+    <a-entity>
+      <a-box
+        height={1}
+        width={1}
+        depth={10}
+        material={{ color: 'darkcyan' }}
+        rotation={{ x: 0, y: spin, z: 0 }}
+        position={{ x: 0, y: -1, z: -0.3 }}
+      />
+      <a-entity
+        center-x
+        text-geometry={{ value: `${name}/`, size: 0.15 }}
+        material={{ color: 'fuchsia' }}
+        position={{ x: 0, y: 0, z: -0.3 }}
+        rotation={{ x: 0, y: 0, z: 0 }}
+      />
+    </a-entity>
+  );
+};
+
+const Directory = ({ files, name, directories }) => {
+  return (
+    <Cylinder>
+      <Name name={name} />
+      <Layout radius={3}>{files.map(file => <File file={file} />)}</Layout>
+      <Layout radius={10}>
+        {directories.map(({ name }, index) => (
+          <DirectoryWithLink
+            name={name}
+            index={index}
+            total={directories.length}
+          />
+        ))}
+      </Layout>
+    </Cylinder>
+  );
+};
 
 aframe.registerComponent('center-x', {
   update() {
@@ -81,8 +114,13 @@ aframe.registerComponent('load-tree', {
 
     const directory = treeFixture.tree;
     const files = directory.children.filter(({ type }) => type === 'file');
+    const directories = directory.children.filter(
+      ({ type }) => type === 'directory'
+    );
     const name = directory.name;
 
-    sceneEl.appendChild(<Directory files={files} name={name} />);
+    sceneEl.appendChild(
+      <Directory files={files} name={name} directories={directories} />
+    );
   }
 });
