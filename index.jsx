@@ -20,7 +20,7 @@ const File = ({ file, offset }) => (
   </a-entity>
 );
 
-const Layout = ({ children, radius = 3 }) => {
+const CircleLayout = ({ children, radius = 3 }) => {
   return (
     <a-entity
       layout={{ type: 'circle', radius, plane: 'xz' }}
@@ -80,8 +80,10 @@ const Directory = ({ files, name, directories }) => {
   return (
     <Cylinder>
       <Name name={name} />
-      <Layout radius={3}>{files.map(file => <File file={file} />)}</Layout>
-      <Layout radius={10}>
+      <CircleLayout radius={3}>
+        {files.map(file => <File file={file} />)}
+      </CircleLayout>
+      <CircleLayout radius={10}>
         {directories.map(({ name }, index) => (
           <DirectoryWithLink
             name={name}
@@ -89,7 +91,7 @@ const Directory = ({ files, name, directories }) => {
             total={directories.length}
           />
         ))}
-      </Layout>
+      </CircleLayout>
     </Cylinder>
   );
 };
