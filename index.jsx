@@ -31,6 +31,19 @@ const CircleLayout = ({ children, radius = 3 }) => {
   );
 };
 
+const SemiCircleLayout = ({ children, radius = 3, total }) => {
+  const angle = 180 / (total - 1);
+  return (
+    <a-entity
+      layout={{ type: 'circle', radius, plane: 'xz', angle }}
+      position={{ x: 0, y: 1, z: 0 }}
+      rotation={{ x: 0, y: 180, z: 0 }}
+    >
+      {children}
+    </a-entity>
+  );
+};
+
 const Cylinder = ({ children }) => (
   <a-cylinder
     color="cyan"
@@ -54,8 +67,9 @@ const Name = ({ name }) => (
 );
 
 const DirectoryWithLink = ({ name, index, total }) => {
-  const degreesPerIndex = 360 / total;
-  const spin = 360 - 90 - degreesPerIndex * index;
+  const degreesPerIndex = 180 / (total - 1);
+
+  const spin = 270 - degreesPerIndex * index;
   return (
     <a-entity rotation={{ x: 0, y: spin, z: 0 }}>
       <a-box
@@ -83,7 +97,7 @@ const Directory = ({ files, name, directories }) => {
       <CircleLayout radius={3}>
         {files.map(file => <File file={file} />)}
       </CircleLayout>
-      <CircleLayout radius={10}>
+      <SemiCircleLayout radius={10} total={directories.length}>
         {directories.map(({ name }, index) => (
           <DirectoryWithLink
             name={name}
@@ -91,7 +105,7 @@ const Directory = ({ files, name, directories }) => {
             total={directories.length}
           />
         ))}
-      </CircleLayout>
+      </SemiCircleLayout>
     </Cylinder>
   );
 };
