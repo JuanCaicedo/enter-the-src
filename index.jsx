@@ -66,7 +66,7 @@ const Name = ({ name }) => (
   />
 );
 
-const DirectoryWithLink = ({ name, index, total }) => {
+const DirectoryWithLink = ({ name, index, total, pathLength }) => {
   const degreesPerIndex = 180 / (total - 1);
 
   const spin = 270 - degreesPerIndex * index;
@@ -75,7 +75,7 @@ const DirectoryWithLink = ({ name, index, total }) => {
       <a-box
         height={1}
         width={1}
-        depth={10}
+        depth={pathLength}
         position={{ x: 0, y: -1, z: 0 }}
         color="cyan"
         src="https://i.imgur.com/mYmmbrp.jpg"
@@ -91,19 +91,24 @@ const DirectoryWithLink = ({ name, index, total }) => {
   );
 };
 
-const Directory = ({ files, name, directories }) => {
+const Directory = ({ files, name, directories, radius }) => {
+  const pathLength = 10;
   return (
     <Platform>
       <Name name={name} />
-      <CircleLayout radius={3}>
+      <CircleLayout radius={radius / 2}>
         {files.map(file => <File file={file} />)}
       </CircleLayout>
-      <SemiCircleLayout radius={10} total={directories.length}>
+      <SemiCircleLayout
+        radius={radius + pathLength / 2}
+        total={directories.length}
+      >
         {directories.map(({ name }, index) => (
           <DirectoryWithLink
             name={name}
             index={index}
             total={directories.length}
+            pathLength={pathLength}
           />
         ))}
       </SemiCircleLayout>
@@ -134,7 +139,12 @@ aframe.registerComponent('load-tree', {
     const name = directory.name;
 
     sceneEl.appendChild(
-      <Directory files={files} name={name} directories={directories} />
+      <Directory
+        files={files}
+        name={name}
+        directories={directories}
+        radius={5}
+      />
     );
   }
 });
