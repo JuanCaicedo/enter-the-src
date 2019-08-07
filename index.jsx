@@ -10,7 +10,7 @@ import createElement from './create-element';
 const File = ({ file, offset }) => (
   <a-entity>
     <a-entity
-      center-x
+      center-geometry
       text-geometry={{ value: `${file.name}`, size: 0.15 }}
       material={{ color: 'greenyellow' }}
       position={{ x: 0, y: 0.3, z: 0 }}
@@ -59,7 +59,7 @@ const Cylinder = ({ children }) => (
 
 const Name = ({ name }) => (
   <a-entity
-    center-x
+    center-geometry
     text-geometry={{ value: `${name}/` }}
     material={{ color: 'blue' }}
     position={{ x: 0, y: 2, z: 0 }}
@@ -80,7 +80,7 @@ const DirectoryWithLink = ({ name, index, total }) => {
         position={{ x: 0, y: -1, z: 0 }}
       />
       <a-entity
-        center-x
+        center-geometry
         text-geometry={{ value: `${name}/`, size: 0.5 }}
         material={{ color: 'fuchsia' }}
         position={{ x: 0, y: 0.5, z: 5 }}
@@ -110,14 +110,12 @@ const Directory = ({ files, name, directories }) => {
   );
 };
 
-aframe.registerComponent('center-x', {
+aframe.registerComponent('center-geometry', {
   update() {
     // Set timeout because we need to wait for this to be loaded
     setTimeout(() => {
       const mesh = this.el.getObject3D('mesh');
-      const bbox = new THREE.Box3().setFromObject(this.el.object3D);
-      const offset = (bbox.min.x - bbox.max.x) / 2;
-      mesh.position.set(offset, 0, 0);
+      mesh.geometry.center();
     }, 0);
   }
 });
