@@ -44,7 +44,7 @@ const SemiCircleLayout = ({ children, radius = 3, total }) => {
   );
 };
 
-const Cylinder = ({ children }) => (
+const Platform = ({ children }) => (
   <a-cylinder
     color="cyan"
     height={1}
@@ -93,7 +93,7 @@ const DirectoryWithLink = ({ name, index, total }) => {
 
 const Directory = ({ files, name, directories }) => {
   return (
-    <Cylinder>
+    <Platform>
       <Name name={name} />
       <CircleLayout radius={3}>
         {files.map(file => <File file={file} />)}
@@ -107,7 +107,7 @@ const Directory = ({ files, name, directories }) => {
           />
         ))}
       </SemiCircleLayout>
-    </Cylinder>
+    </Platform>
   );
 };
 
