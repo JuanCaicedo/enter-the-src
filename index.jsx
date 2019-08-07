@@ -66,7 +66,7 @@ const Name = ({ name }) => (
   />
 );
 
-const DirectoryWithLink = ({ name, index, total, pathLength }) => {
+const DirectoryWithLink = ({ name, index, total, pathLength, contents }) => {
   const degreesPerIndex = 180 / (total - 1);
 
   const spin = 270 - degreesPerIndex * index;
@@ -87,12 +87,16 @@ const DirectoryWithLink = ({ name, index, total, pathLength }) => {
         position={{ x: 0, y: 0.5, z: 5 }}
         rotation={{ x: 0, y: 0, z: 0 }}
       />
+      <Directory name={name} radius={5} contents={contents} />
     </a-entity>
   );
 };
 
-const Directory = ({ files, name, directories, radius }) => {
+const Directory = ({ name, contents, radius }) => {
   const pathLength = 10;
+  const files = contents.filter(({ type }) => type === 'file');
+  const directories = contents.filter(({ type }) => type === 'directory');
+
   return (
     <Platform>
       <Name name={name} />
@@ -103,12 +107,13 @@ const Directory = ({ files, name, directories, radius }) => {
         radius={radius + pathLength / 2}
         total={directories.length}
       >
-        {directories.map(({ name }, index) => (
+        {directories.map(({ name, children }, index) => (
           <DirectoryWithLink
             name={name}
             index={index}
             total={directories.length}
             pathLength={pathLength}
+            contents={children}
           />
         ))}
       </SemiCircleLayout>
@@ -132,17 +137,11 @@ aframe.registerComponent('load-tree', {
     const sceneEl = document.querySelector('a-scene');
 
     const directory = treeFixture.tree;
-    const files = directory.children.filter(({ type }) => type === 'file');
-    const directories = directory.children.filter(
-      ({ type }) => type === 'directory'
-    );
-    const name = directory.name;
 
     sceneEl.appendChild(
       <Directory
-        files={files}
-        name={name}
-        directories={directories}
+        contents={directory.children}
+        name={directory.name}
         radius={5}
       />
     );
