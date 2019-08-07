@@ -76,8 +76,9 @@ const DirectoryWithLink = ({ name, index, total }) => {
         height={1}
         width={1}
         depth={10}
-        material={{ color: 'darkcyan' }}
         position={{ x: 0, y: -1, z: 0 }}
+        color="cyan"
+        src="https://i.imgur.com/mYmmbrp.jpg"
       />
       <a-entity
         center-geometry
