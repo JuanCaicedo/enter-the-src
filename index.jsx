@@ -7,24 +7,19 @@ import './primitives/a-file';
 import treeFixture from './tree-fixture';
 import createElement from './create-element';
 
-const File = ({ file, offset }) => (
-  <a-entity>
-    <a-entity
-      center-geometry
-      text-geometry={{ value: `${file.name}`, size: 0.15 }}
-      material={{ color: 'greenyellow' }}
-      position={{ x: 0, y: 0.3, z: 0 }}
-    />
+const File = ({ file, offset, radius }) => {
+  return (
+    <a-entity>
+      <a-sphere color="red" radius={radius} position={{ y: radius }} />
+    </a-entity>
+  );
+};
 
-    <a-file color="red" radius={0.2} />
-  </a-entity>
-);
-
-const CircleLayout = ({ children, radius = 3 }) => {
+const CircleLayout = ({ children, radius = 3, heightOffset }) => {
   return (
     <a-entity
       layout={{ type: 'circle', radius, plane: 'xz' }}
-      position={{ x: 0, y: 1, z: 0 }}
+      position={{ x: 0, y: heightOffset, z: 0 }}
     >
       {children}
     </a-entity>
@@ -36,7 +31,7 @@ const SemiCircleLayout = ({ children, radius = 3, total }) => {
   return (
     <a-entity
       layout={{ type: 'circle', radius, plane: 'xz', angle }}
-      position={{ x: 0, y: 1, z: 0 }}
+      position={{ x: 0, y: 0, z: 0 }}
       rotation={{ x: 0, y: 180, z: 0 }}
     >
       {children}
@@ -44,18 +39,18 @@ const SemiCircleLayout = ({ children, radius = 3, total }) => {
   );
 };
 
-const Platform = ({ children, depthOffset }) => (
-  <a-cylinder
-    color="cyan"
-    height={1}
-    radius={5}
-    material={{ side: 'double' }}
-    position={{ x: 0, y: -1, z: -5 - depthOffset }}
-    src="https://i.imgur.com/mYmmbrp.jpg"
-  >
-    {children}
-  </a-cylinder>
-);
+const Platform = ({ children, depthOffset, radius, height }) => {
+  return (
+    <a-cylinder
+      color="cyan"
+      height={height}
+      radius={radius}
+      position={{ x: 0, y: 0, z: -5 - depthOffset }}
+    >
+      {children}
+    </a-cylinder>
+  );
+};
 
 const Name = ({ name }) => (
   <a-entity
@@ -98,30 +93,34 @@ const DirectoryWithLink = ({ name, index, total, pathLength, contents }) => {
 };
 
 const Directory = ({ name, contents, radius, depthOffset = 0 }) => {
-  const pathLength = 10;
   const files = contents.filter(({ type }) => type === 'file');
   const directories = contents.filter(({ type }) => type === 'directory');
 
+  const platformHeight = 0.1;
+  const fileRadius = 0.2;
+  const extraPadding = 0.2;
   return (
-    <Platform depthOffset={depthOffset}>
-      <Name name={name} />
-      <CircleLayout radius={radius / 2}>
-        {files.map(file => <File file={file} />)}
-      </CircleLayout>
-      <SemiCircleLayout
-        radius={radius + pathLength / 2}
-        total={directories.length}
+    <Platform depthOffset={depthOffset} radius={radius} height={platformHeight}>
+      <CircleLayout
+        radius={radius - fileRadius - extraPadding}
+        heightOffset={platformHeight}
       >
-        {directories.map(({ name, children }, index) => (
-          <DirectoryWithLink
-            name={name}
-            index={index}
-            total={directories.length}
-            pathLength={pathLength}
-            contents={children}
-          />
-        ))}
-      </SemiCircleLayout>
+        {files.map(file => <File file={file} radius={fileRadius} />)}
+      </CircleLayout>
+      {/* <SemiCircleLayout */}
+      {/*   radius={radius + pathLength / 2} */}
+      {/*   total={directories.length} */}
+      {/* > */}
+      {/*   {directories.map(({ name, children }, index) => ( */}
+      {/*     <DirectoryWithLink */}
+      {/*       name={name} */}
+      {/*       index={index} */}
+      {/*       total={directories.length} */}
+      {/*       pathLength={pathLength} */}
+      {/*       contents={children} */}
+      {/*     /> */}
+      {/*   ))} */}
+      {/* </SemiCircleLayout> */}
     </Platform>
   );
 };
