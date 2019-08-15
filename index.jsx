@@ -4,6 +4,7 @@ import * as R from 'ramda';
 import 'aframe-layout-component';
 import 'aframe-text-geometry-component';
 import treeFixture from './tree-fixture';
+import * as radiusMath from './radius';
 
 const File = ({ file, offset, radius }) => {
   return (
@@ -103,29 +104,19 @@ const Directory = ({ name, contents, radius, depthOffset = 0 }) => {
 
   return (
     <Platform depthOffset={depthOffset} radius={radius} height={platformHeight}>
-      <CircleLayout
-        radius={radius - fileRadius - extraPadding}
-        heightOffset={platformHeight}
-      >
-        {files.map(file => <File file={file} radius={fileRadius} />)}
-      </CircleLayout>
-
-      <CircleLayout
-        radius={radius - directoryPadding}
-        heightOffset={platformHeight}
-      >
-        {directories.map(({ children }, index) => {
-          const newRadius = (radius - directoryPadding) / directories.length;
-          const degreesPerIndex = 360 / directories.length;
-
-          const spin = 270 - degreesPerIndex * index;
-
+      <CircleLayout radius={radius} heightOffset={platformHeight}>
+        {[1, 2, 3, 4, 5].map((num, i, arr) => {
+          const degreesPerIndex = 360 / arr.length;
+          const newRadius = radiusMath.radiusForSmallerCircles(
+            radius,
+            arr.length
+          );
           return (
-            <a-entity rotation={{ y: spin }}>
-              <Directory
-                contents={children}
-                radius={newRadius}
+            <a-entity rotation={{ y: 270 - degreesPerIndex * i }}>
+              <Platform
                 depthOffset={newRadius}
+                radius={newRadius}
+                height={platformHeight}
               />
             </a-entity>
           );
