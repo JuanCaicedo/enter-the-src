@@ -3,9 +3,7 @@ import aframe from 'aframe';
 import * as R from 'ramda';
 import 'aframe-layout-component';
 import 'aframe-text-geometry-component';
-import './primitives/a-file';
 import treeFixture from './tree-fixture';
-import createElement from './create-element';
 
 const File = ({ file, offset, radius }) => {
   return (
@@ -15,7 +13,7 @@ const File = ({ file, offset, radius }) => {
   );
 };
 
-const CircleLayout = ({ children, radius = 3, heightOffset }) => {
+const CircleLayout = ({ children, radius, heightOffset }) => {
   return (
     <a-entity
       layout={{ type: 'circle', radius, plane: 'xz' }}
@@ -39,13 +37,14 @@ const SemiCircleLayout = ({ children, radius = 3, total }) => {
   );
 };
 
-const Platform = ({ children, depthOffset, radius, height }) => {
+const Platform = ({ children, depthOffset = 0, radius, height }) => {
   return (
     <a-cylinder
       color="cyan"
       height={height}
       radius={radius}
-      position={{ x: 0, y: 0, z: -5 - depthOffset }}
+      position={{ x: 0, y: 0, z: depthOffset }}
+      src="https://i.imgur.com/mYmmbrp.jpg"
     >
       {children}
     </a-cylinder>
@@ -97,8 +96,11 @@ const Directory = ({ name, contents, radius, depthOffset = 0 }) => {
   const directories = contents.filter(({ type }) => type === 'directory');
 
   const platformHeight = 0.1;
-  const fileRadius = 0.2;
   const extraPadding = 0.2;
+  const fileRadius = 0.2;
+  const filePadding = fileRadius + extraPadding;
+  const directoryPadding = filePadding * 2;
+
   return (
     <Platform depthOffset={depthOffset} radius={radius} height={platformHeight}>
       <CircleLayout
@@ -107,20 +109,28 @@ const Directory = ({ name, contents, radius, depthOffset = 0 }) => {
       >
         {files.map(file => <File file={file} radius={fileRadius} />)}
       </CircleLayout>
-      {/* <SemiCircleLayout */}
-      {/*   radius={radius + pathLength / 2} */}
-      {/*   total={directories.length} */}
-      {/* > */}
-      {/*   {directories.map(({ name, children }, index) => ( */}
-      {/*     <DirectoryWithLink */}
-      {/*       name={name} */}
-      {/*       index={index} */}
-      {/*       total={directories.length} */}
-      {/*       pathLength={pathLength} */}
-      {/*       contents={children} */}
-      {/*     /> */}
-      {/*   ))} */}
-      {/* </SemiCircleLayout> */}
+
+      <CircleLayout
+        radius={radius - directoryPadding}
+        heightOffset={platformHeight}
+      >
+        {directories.map(({ children }, index) => {
+          const newRadius = (radius - directoryPadding) / directories.length;
+          const degreesPerIndex = 360 / directories.length;
+
+          const spin = 270 - degreesPerIndex * index;
+
+          return (
+            <a-entity rotation={{ y: spin }}>
+              <Directory
+                contents={children}
+                radius={newRadius}
+                depthOffset={newRadius}
+              />
+            </a-entity>
+          );
+        })}
+      </CircleLayout>
     </Platform>
   );
 };
@@ -147,6 +157,7 @@ aframe.registerComponent('load-tree', {
         contents={directory.children}
         name={directory.name}
         radius={5}
+        depthOffset={-5}
       />
     );
   }
