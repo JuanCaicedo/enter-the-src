@@ -110,6 +110,7 @@ const Directory = ({ name, contents, radius, depthOffset = 0 }) => {
   const fileRadius = 0.2;
   const filePadding = fileRadius + extraPadding;
   const directoryPadding = filePadding * 2;
+  const innerRadius = radius - directoryPadding;
 
   return (
     <Platform depthOffset={depthOffset} radius={radius} height={platformHeight}>
@@ -118,14 +119,14 @@ const Directory = ({ name, contents, radius, depthOffset = 0 }) => {
           <File file={file} radius={fileRadius} spin={spin(index, length)} />
         ))}
       </CircleLayout>
-      <CircleLayout
-        radius={radius - directoryPadding}
-        heightOffset={platformHeight}
-      >
-        {[1, 2, 3, 4, 5].map((num, i, arr) => {
-          const newRadius = radiusMath.radiusForSmallerCircles(radius, length);
+      <CircleLayout radius={innerRadius} heightOffset={platformHeight}>
+        {directories.map((directory, index, { length }) => {
+          const newRadius = radiusMath.radiusForSmallerCircles(
+            innerRadius,
+            length
+          );
           return (
-            <a-entity rotation={{ y: spin(i, length) }}>
+            <a-entity rotation={{ y: spin(index, length) }}>
               <Platform
                 depthOffset={newRadius}
                 radius={newRadius}
