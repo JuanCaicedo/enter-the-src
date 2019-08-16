@@ -6,10 +6,14 @@ import 'aframe-text-geometry-component';
 import treeFixture from './tree-fixture';
 import * as radiusMath from './radius';
 
-const File = ({ file, offset, radius }) => {
+const File = ({ file, radius, spin }) => {
   return (
-    <a-entity>
-      <a-sphere color="red" radius={radius} position={{ y: radius }} />
+    <a-entity rotation={{ y: spin }}>
+      <a-sphere
+        color="red"
+        radius={radius}
+        position={{ y: radius, z: radius }}
+      />
     </a-entity>
   );
 };
@@ -92,6 +96,11 @@ const DirectoryWithLink = ({ name, index, total, pathLength, contents }) => {
   );
 };
 
+const spin = (index, length) => {
+  const degreesPerIndex = 360 / length;
+  return 270 - degreesPerIndex * index;
+};
+
 const Directory = ({ name, contents, radius, depthOffset = 0 }) => {
   const files = contents.filter(({ type }) => type === 'file');
   const directories = contents.filter(({ type }) => type === 'directory');
@@ -105,14 +114,18 @@ const Directory = ({ name, contents, radius, depthOffset = 0 }) => {
   return (
     <Platform depthOffset={depthOffset} radius={radius} height={platformHeight}>
       <CircleLayout radius={radius} heightOffset={platformHeight}>
+        {files.map((file, index, { length }) => (
+          <File file={file} radius={fileRadius} spin={spin(index, length)} />
+        ))}
+      </CircleLayout>
+      <CircleLayout
+        radius={radius - directoryPadding}
+        heightOffset={platformHeight}
+      >
         {[1, 2, 3, 4, 5].map((num, i, arr) => {
-          const degreesPerIndex = 360 / arr.length;
-          const newRadius = radiusMath.radiusForSmallerCircles(
-            radius,
-            arr.length
-          );
+          const newRadius = radiusMath.radiusForSmallerCircles(radius, length);
           return (
-            <a-entity rotation={{ y: 270 - degreesPerIndex * i }}>
+            <a-entity rotation={{ y: spin(i, length) }}>
               <Platform
                 depthOffset={newRadius}
                 radius={newRadius}
