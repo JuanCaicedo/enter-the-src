@@ -8,10 +8,7 @@ describe('directoryRadius', () => {
           type: 'file'
         }
       ];
-      const fileRadius = 1;
-      expect(RadiusMath.directoryRadius(fileRadius, children)).toEqual(
-        fileRadius
-      );
+      expect(RadiusMath.directoryRadius(children)).toEqual(1);
     });
 
     it('2 files', () => {
@@ -23,11 +20,8 @@ describe('directoryRadius', () => {
           type: 'file'
         }
       ];
-      const fileRadius = 1;
       const expected = 2;
-      expect(RadiusMath.directoryRadius(fileRadius, children)).toEqual(
-        expected
-      );
+      expect(RadiusMath.directoryRadius(children)).toEqual(expected);
     });
   });
 
@@ -39,9 +33,8 @@ describe('directoryRadius', () => {
           children: [{ type: 'file' }]
         }
       ];
-      const fileRadius = 1;
-      const actual = RadiusMath.directoryRadius(fileRadius, children);
-      const expected = fileRadius;
+      const actual = RadiusMath.directoryRadius(children);
+      const expected = 1;
       expect(actual).toEqual(expected);
     });
 
@@ -59,11 +52,8 @@ describe('directoryRadius', () => {
           ]
         }
       ];
-      const fileRadius = 1;
       const expected = 2;
-      expect(RadiusMath.directoryRadius(fileRadius, children)).toEqual(
-        expected
-      );
+      expect(RadiusMath.directoryRadius(children)).toEqual(expected);
     });
 
     it('3 files', () => {
@@ -83,11 +73,8 @@ describe('directoryRadius', () => {
           ]
         }
       ];
-      const fileRadius = 1;
-      const expected = 2.154700538;
-      expect(RadiusMath.directoryRadius(fileRadius, children)).toEqual(
-        expected
-      );
+      const expected = 2.1547005383792497;
+      expect(RadiusMath.directoryRadius(children)).toEqual(expected);
     });
 
     it('2 directories', () => {
@@ -101,8 +88,7 @@ describe('directoryRadius', () => {
           children: [{ type: 'file' }]
         }
       ];
-      const fileRadius = 1;
-      const actual = RadiusMath.directoryRadius(fileRadius, children);
+      const actual = RadiusMath.directoryRadius(children);
       const expected = 2;
       expect(actual).toEqual(expected);
     });
@@ -127,11 +113,8 @@ describe('directoryRadius', () => {
           ]
         }
       ];
-      const fileRadius = 1;
-      const expected = 2.154700538;
-      expect(RadiusMath.directoryRadius(fileRadius, children)).toEqual(
-        expected
-      );
+      const expected = 2.1547005383792497;
+      expect(RadiusMath.directoryRadius(children)).toEqual(expected);
     });
   });
 });

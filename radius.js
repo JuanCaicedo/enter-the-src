@@ -236,22 +236,22 @@ export function radiusForSmallerCircles(radius, numberOfCircles) {
 }
 
 function containerRadius(numberOfCircles) {
-  return (1 / radiuses[numberOfCircles]).toFixed(9);
+  return 1 / radiuses[numberOfCircles];
 }
 
 const filterFiles = R.filter(R.propEq('type', 'file'));
 const filterDirectories = R.filter(R.propEq('type', 'directory'));
 
-export function directoryRadius(fileRadius, children) {
+export function directoryRadius(children) {
   const files = filterFiles(children);
   const subDirectories = filterDirectories(children);
 
   if (R.isEmpty(subDirectories)) {
-    return containerRadius(files.length) * fileRadius;
+    return containerRadius(files.length);
   }
 
   const radiuses = R.map(subDirectory =>
-    directoryRadius(fileRadius, subDirectory.children)
+    directoryRadius(subDirectory.children)
   )(subDirectories);
   const maxRadius = R.reduce(R.max, 0, radiuses);
   const radius = containerRadius(subDirectories.length) * maxRadius;
