@@ -4,7 +4,7 @@ import * as R from 'ramda';
 import 'aframe-layout-component';
 import 'aframe-text-geometry-component';
 import treeFixture from './tree-fixture';
-import * as radiusMath from './radius';
+import * as RadiusMath from './radius';
 
 const File = ({ file, radius, spin }) => {
   return (
@@ -100,16 +100,15 @@ const spin = (index, length) => {
   return 270 - degreesPerIndex * index;
 };
 
-const Directory = ({ name, contents, radius }) => {
+const Directory = ({ name, contents, fileRadius }) => {
   const files = contents.filter(({ type }) => type === 'file');
   const directories = contents.filter(({ type }) => type === 'directory');
 
-  const platformHeight = 1;
   const extraPadding = 0.2;
-  const fileRadius = 0.2;
   const filePadding = fileRadius + extraPadding;
-  const directoryPadding = filePadding * 2;
-  const innerRadius = radius - directoryPadding;
+  const innerRadius = RadiusMath.directoryRadius(fileRadius, directories);
+  const radius = innerRadius + filePadding;
+  const platformHeight = 1;
 
   return (
     <a-entity position={{ z: radius }}>
@@ -121,10 +120,6 @@ const Directory = ({ name, contents, radius }) => {
         </CircleLayout>
         <CircleLayout radius={innerRadius} heightOffset={platformHeight}>
           {directories.map((directory, index, { length }) => {
-            const newRadius = radiusMath.radiusForSmallerCircles(
-              innerRadius,
-              length
-            );
             return (
               <a-entity
                 rotation={{ y: spin(index, length) }}
@@ -132,8 +127,7 @@ const Directory = ({ name, contents, radius }) => {
               >
                 <Directory
                   contents={directory.children}
-                  radius={newRadius}
-                  heightOffset={platformHeight}
+                  fileRadius={fileRadius}
                 />
               </a-entity>
             );
@@ -160,14 +154,15 @@ aframe.registerComponent('load-tree', {
     const sceneEl = document.querySelector('a-scene');
 
     const directory = treeFixture.tree;
+    const fileRadius = 0.1;
 
     sceneEl.appendChild(
       <a-entity position={{ z: -5 }}>
         <Directory
           contents={directory.children}
           name={directory.name}
-          radius={5}
           heightOffset={0}
+          fileRadius={fileRadius}
         />
       </a-entity>
     );
