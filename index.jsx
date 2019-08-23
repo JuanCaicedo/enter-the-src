@@ -3,28 +3,26 @@ import aframe from 'aframe';
 import * as R from 'ramda';
 import 'aframe-layout-component';
 import 'aframe-text-geometry-component';
-import './primitives/a-file';
 import treeFixture from './tree-fixture';
-import createElement from './create-element';
+import * as radiusMath from './radius';
 
-const File = ({ file, offset }) => (
-  <a-entity>
-    <a-entity
-      center-geometry
-      text-geometry={{ value: `${file.name}`, size: 0.15 }}
-      material={{ color: 'greenyellow' }}
-      position={{ x: 0, y: 0.3, z: 0 }}
-    />
+const File = ({ file, radius, spin }) => {
+  return (
+    <a-entity rotation={{ y: spin }}>
+      <a-sphere
+        color="red"
+        radius={radius}
+        position={{ y: radius, z: radius }}
+      />
+    </a-entity>
+  );
+};
 
-    <a-file color="red" radius={0.2} />
-  </a-entity>
-);
-
-const CircleLayout = ({ children, radius = 3 }) => {
+const CircleLayout = ({ children, radius, heightOffset }) => {
   return (
     <a-entity
       layout={{ type: 'circle', radius, plane: 'xz' }}
-      position={{ x: 0, y: 1, z: 0 }}
+      position={{ x: 0, y: heightOffset, z: 0 }}
     >
       {children}
     </a-entity>
@@ -36,7 +34,7 @@ const SemiCircleLayout = ({ children, radius = 3, total }) => {
   return (
     <a-entity
       layout={{ type: 'circle', radius, plane: 'xz', angle }}
-      position={{ x: 0, y: 1, z: 0 }}
+      position={{ x: 0, y: 0, z: 0 }}
       rotation={{ x: 0, y: 180, z: 0 }}
     >
       {children}
@@ -44,18 +42,18 @@ const SemiCircleLayout = ({ children, radius = 3, total }) => {
   );
 };
 
-const Platform = ({ children, depthOffset }) => (
-  <a-cylinder
-    color="cyan"
-    height={1}
-    radius={5}
-    material={{ side: 'double' }}
-    position={{ x: 0, y: -1, z: -5 - depthOffset }}
-    src="https://i.imgur.com/mYmmbrp.jpg"
-  >
-    {children}
-  </a-cylinder>
-);
+const Platform = ({ children, radius, height }) => {
+  return (
+    <a-cylinder
+      color="cyan"
+      height={height}
+      radius={radius}
+      src="https://i.imgur.com/mYmmbrp.jpg"
+    >
+      {children}
+    </a-cylinder>
+  );
+};
 
 const Name = ({ name }) => (
   <a-entity
@@ -97,32 +95,52 @@ const DirectoryWithLink = ({ name, index, total, pathLength, contents }) => {
   );
 };
 
-const Directory = ({ name, contents, radius, depthOffset = 0 }) => {
-  const pathLength = 10;
+const spin = (index, length) => {
+  const degreesPerIndex = 360 / length;
+  return 270 - degreesPerIndex * index;
+};
+
+const Directory = ({ name, contents, radius }) => {
   const files = contents.filter(({ type }) => type === 'file');
   const directories = contents.filter(({ type }) => type === 'directory');
 
+  const platformHeight = 1;
+  const extraPadding = 0.2;
+  const fileRadius = 0.2;
+  const filePadding = fileRadius + extraPadding;
+  const directoryPadding = filePadding * 2;
+  const innerRadius = radius - directoryPadding;
+
   return (
-    <Platform depthOffset={depthOffset}>
-      <Name name={name} />
-      <CircleLayout radius={radius / 2}>
-        {files.map(file => <File file={file} />)}
-      </CircleLayout>
-      <SemiCircleLayout
-        radius={radius + pathLength / 2}
-        total={directories.length}
-      >
-        {directories.map(({ name, children }, index) => (
-          <DirectoryWithLink
-            name={name}
-            index={index}
-            total={directories.length}
-            pathLength={pathLength}
-            contents={children}
-          />
-        ))}
-      </SemiCircleLayout>
-    </Platform>
+    <a-entity position={{ z: radius }}>
+      <Platform radius={radius} height={platformHeight}>
+        <CircleLayout radius={radius} heightOffset={platformHeight}>
+          {files.map((file, index, { length }) => (
+            <File file={file} radius={fileRadius} spin={spin(index, length)} />
+          ))}
+        </CircleLayout>
+        <CircleLayout radius={innerRadius} heightOffset={platformHeight}>
+          {directories.map((directory, index, { length }) => {
+            const newRadius = radiusMath.radiusForSmallerCircles(
+              innerRadius,
+              length
+            );
+            return (
+              <a-entity
+                rotation={{ y: spin(index, length) }}
+                position={{ y: platformHeight }}
+              >
+                <Directory
+                  contents={directory.children}
+                  radius={newRadius}
+                  heightOffset={platformHeight}
+                />
+              </a-entity>
+            );
+          })}
+        </CircleLayout>
+      </Platform>
+    </a-entity>
   );
 };
 
@@ -144,11 +162,14 @@ aframe.registerComponent('load-tree', {
     const directory = treeFixture.tree;
 
     sceneEl.appendChild(
-      <Directory
-        contents={directory.children}
-        name={directory.name}
-        radius={5}
-      />
+      <a-entity position={{ z: -5 }}>
+        <Directory
+          contents={directory.children}
+          name={directory.name}
+          radius={5}
+          heightOffset={0}
+        />
+      </a-entity>
     );
   }
 });
