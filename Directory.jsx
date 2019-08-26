@@ -1,25 +1,30 @@
 import * as React from 'jsx-dom';
 import * as RadiusMath from './radius';
+import * as R from 'ramda';
 
 const File = ({ file, radius, spin }) => {
   return (
-    <a-entity rotation={{ y: spin }}>
-      <a-sphere
-        color="red"
-        radius={radius}
-        position={{ y: radius, z: radius }}
-      />
+    <a-entity rotation={{ y: spin }} debug="test">
+      <a-sphere color="red" radius={radius} position={{ y: radius }} />
     </a-entity>
   );
 };
 
-const CircleLayout = ({ children, radius, heightOffset }) => {
+const CircleLayout = ({ contents, radius, heightOffset }) => {
+  if (contents.length === 1) {
+    return (
+      <a-entity position={{ y: heightOffset }} rotation={{ y: -90 }}>
+        {contents}
+      </a-entity>
+    );
+  }
   return (
     <a-entity
       layout={{ type: 'circle', radius, plane: 'xz' }}
-      position={{ x: 0, y: heightOffset, z: 0 }}
+      position={{ y: heightOffset }}
+      rotation={{ y: -90 }}
     >
-      {children}
+      {contents}
     </a-entity>
   );
 };
@@ -37,13 +42,14 @@ const SemiCircleLayout = ({ children, radius = 3, total }) => {
   );
 };
 
-const Platform = ({ children, radius, height }) => {
+const Platform = ({ children, radius, height, heightOffset }) => {
   return (
     <a-cylinder
       color="cyan"
       height={height}
       radius={radius}
       src="https://i.imgur.com/mYmmbrp.jpg"
+      position={{ y: heightOffset }}
     >
       {children}
     </a-cylinder>
@@ -96,14 +102,39 @@ const spin = (index, length) => {
 };
 
 export const Directory = ({ name, contents, fileRadius }) => {
+  if (R.isEmpty(contents)) {
+    return '';
+  }
   const files = contents.filter(({ type }) => type === 'file');
   const directories = contents.filter(({ type }) => type === 'directory');
 
   const extraPadding = 0.2;
-  const filePadding = fileRadius + extraPadding;
-  const innerRadius = RadiusMath.directoryRadius(fileRadius, directories);
-  const radius = innerRadius + filePadding;
   const platformHeight = 1;
+
+  if (R.isEmpty(directories)) {
+    const fileContainerRadius =
+      RadiusMath.containerRadius(files.length) * fileRadius;
+    const radius = fileContainerRadius + extraPadding;
+    return (
+      <Platform
+        radius={radius}
+        height={platformHeight}
+        heightOffset={platformHeight / 2}
+      >
+        <CircleLayout
+          radius={fileContainerRadius}
+          heightOffset={platformHeight / 2}
+          contents={files.map((file, index, { length }) => (
+            <File file={file} radius={fileRadius} spin={spin(index, length)} />
+          ))}
+        />
+      </Platform>
+    );
+  }
+
+  const filePadding = fileRadius + extraPadding;
+  const innerRadius = RadiusMath.directoryRadius(directories);
+  const radius = innerRadius + filePadding;
 
   return (
     <a-entity position={{ z: radius }}>

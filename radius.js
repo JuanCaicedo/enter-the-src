@@ -235,7 +235,7 @@ export function radiusForSmallerCircles(radius, numberOfCircles) {
   return radiuses[numberOfCircles] * radius;
 }
 
-function containerRadius(numberOfCircles) {
+export function containerRadius(numberOfCircles) {
   return 1 / radiuses[numberOfCircles];
 }
 
