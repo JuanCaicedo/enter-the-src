@@ -1,6 +1,7 @@
 import * as React from 'jsx-dom';
 import * as RadiusMath from './radius';
 import * as R from 'ramda';
+import Bricks from './bricks.jpg';
 
 const File = ({ file, radius, spin }) => {
   return (
@@ -48,7 +49,8 @@ const Platform = ({ children, radius, height, heightOffset }) => {
       color="cyan"
       height={height}
       radius={radius}
-      src="https://i.imgur.com/mYmmbrp.jpg"
+      src={Bricks}
+      repeat="20 20"
       position={{ y: heightOffset }}
     >
       {children}
