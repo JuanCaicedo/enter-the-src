@@ -4,7 +4,7 @@ import * as R from 'ramda';
 
 const File = ({ file, radius, spin }) => {
   return (
-    <a-entity rotation={{ y: spin }} debug="test">
+    <a-entity rotation={{ y: spin }}>
       <a-sphere color="red" radius={radius} position={{ y: radius }} />
     </a-entity>
   );
@@ -133,24 +133,31 @@ export const Directory = ({ name, contents, fileRadius }) => {
   }
 
   const filePadding = fileRadius + extraPadding;
-  const innerRadius = RadiusMath.directoryRadius(directories);
-  const radius = innerRadius + filePadding;
+  const innerRadius =
+    RadiusMath.directoryRadius(directories) * fileRadius +
+    fileRadius +
+    extraPadding * 2;
 
   return (
-    <a-entity position={{ z: radius }}>
-      <Platform radius={radius} height={platformHeight}>
-        <CircleLayout radius={radius} heightOffset={platformHeight}>
-          {files.map((file, index, { length }) => (
+    <a-entity position={{ z: innerRadius }}>
+      <Platform
+        radius={innerRadius + filePadding}
+        height={platformHeight}
+        heightOffset={platformHeight / 2}
+      >
+        <CircleLayout
+          radius={innerRadius}
+          heightOffset={platformHeight / 2}
+          contents={files.map((file, index, { length }) => (
             <File file={file} radius={fileRadius} spin={spin(index, length)} />
           ))}
-        </CircleLayout>
-        <CircleLayout radius={innerRadius} heightOffset={platformHeight}>
-          {directories.map((directory, index, { length }) => {
+        />
+        <CircleLayout
+          radius={innerRadius}
+          heightOffset={platformHeight / 2}
+          contents={directories.map((directory, index, { length }) => {
             return (
-              <a-entity
-                rotation={{ y: spin(index, length) }}
-                position={{ y: platformHeight }}
-              >
+              <a-entity rotation={{ y: spin(index, length) }}>
                 <Directory
                   contents={directory.children}
                   fileRadius={fileRadius}
@@ -158,7 +165,7 @@ export const Directory = ({ name, contents, fileRadius }) => {
               </a-entity>
             );
           })}
-        </CircleLayout>
+        />
       </Platform>
     </a-entity>
   );
