@@ -50,7 +50,7 @@ const Platform = ({ children, radius, height, heightOffset }) => {
       height={height}
       radius={radius}
       src={Bricks}
-      repeat="20 20"
+      repeat="20 6"
       position={{ y: heightOffset }}
     >
       {children}
