@@ -118,6 +118,9 @@ AFRAME.registerComponent('layout', {
       positions.reverse();
     }
     setPositions(children, positions, data.orderAttribute);
+    if (data.type === 'circle') {
+      rotateChildren(children);
+    }
   },
 
   /**
@@ -425,6 +428,18 @@ function setPositions(els, positions, orderAttribute) {
       positions[i + 2]
     );
   }
+}
+
+function rotateChildren(els) {
+  els.forEach((el, index, { length }) => {
+    const currentYRotation = el.getAttribute('rotation').y;
+    const degreesPerIndex = 360 / length;
+    el.setAttribute('rotation', {
+      x: 0,
+      y: currentYRotation + 270 - degreesPerIndex * index,
+      z: 0
+    });
+  });
 }
 
 function pushPositions() {
