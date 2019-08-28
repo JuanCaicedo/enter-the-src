@@ -2,6 +2,11 @@ import * as React from 'jsx-dom';
 import * as RadiusMath from './radius';
 import * as R from 'ramda';
 import Bricks from './bricks.jpg';
+import Blob from './blob.png';
+
+const fire = {
+  'spe-particles': `texture: ${Blob}; color: yellow, red; color-spread: green; distribution: sphere; radius: .1; particle-count: 10; velocity: 1; velocity-spread: 2; drag: 1; max-age: .5; acceleration:1; size: 1,.2; randomize-position: true`
+};
 
 const File = ({ file, radius, spin, height }) => {
   return (
@@ -13,6 +18,7 @@ const File = ({ file, radius, spin, height }) => {
         radius-bottom={radius}
         radius-top={0}
         height={height}
+        {...fire}
       />
     </a-entity>
   );

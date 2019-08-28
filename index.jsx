@@ -3,6 +3,7 @@ import aframe from 'aframe';
 import * as R from 'ramda';
 import 'aframe-layout-component';
 import 'aframe-text-geometry-component';
+import 'aframe-spe-particles-component';
 import treeFixture from './tree-fixture';
 import { Directory } from './Directory';
 
