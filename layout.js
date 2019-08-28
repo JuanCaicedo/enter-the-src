@@ -202,6 +202,10 @@ function getCirclePositions(data, numChildren) {
   var i;
   var rad;
 
+  if (numChildren == 1) {
+    return positions;
+  }
+
   for (i = 0; i < numChildren; i++) {
     rad;
 
