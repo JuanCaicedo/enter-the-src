@@ -1,3 +1,5 @@
+import * as R from 'ramda';
+
 const radiuses = {
   '1': '1.000000000000000000000000000000',
   '2': '0.500000000000000000000000000000',
@@ -231,4 +233,27 @@ const radiuses = {
 
 export function radiusForSmallerCircles(radius, numberOfCircles) {
   return radiuses[numberOfCircles] * radius;
+}
+
+export function containerRadius(numberOfCircles) {
+  return 1 / radiuses[numberOfCircles];
+}
+
+const filterFiles = R.filter(R.propEq('type', 'file'));
+const filterDirectories = R.filter(R.propEq('type', 'directory'));
+
+export function directoryRadius(children) {
+  const files = filterFiles(children);
+  const subDirectories = filterDirectories(children);
+
+  if (R.isEmpty(subDirectories)) {
+    return containerRadius(files.length);
+  }
+
+  const radiuses = R.map(subDirectory =>
+    directoryRadius(subDirectory.children)
+  )(subDirectories);
+  const maxRadius = R.reduce(R.max, 0, radiuses);
+  const radius = containerRadius(subDirectories.length) * maxRadius;
+  return radius;
 }
