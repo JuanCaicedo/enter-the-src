@@ -1,9 +1,9 @@
 import * as React from 'jsx-dom';
 import aframe from 'aframe';
 import * as R from 'ramda';
-import 'aframe-layout-component';
+import './layout';
 import 'aframe-text-geometry-component';
-import 'aframe-spe-particles-component';
+import './particles';
 import treeFixture from './tree-fixture';
 import { Directory } from './Directory';
 
