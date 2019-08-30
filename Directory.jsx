@@ -8,9 +8,9 @@ const fire = {
   'spe-particles': `texture: ${Blob}; color: yellow, red; color-spread: green; distribution: sphere; radius: .1; particle-count: 10; velocity: 1; velocity-spread: 2; drag: 1; max-age: .5; acceleration:1; size: 1,.2; randomize-position: true`
 };
 
-const File = ({ file, radius, spin, height }) => {
+const File = ({ file, radius, height }) => {
   return (
-    <a-entity rotation={{ y: spin }} class="fileContainer">
+    <a-entity class="fileContainer">
       <a-cone
         position={{ y: height / 2 }}
         color="darkgreen"
@@ -58,11 +58,6 @@ const Platform = ({ children, radius, height, heightOffset }) => {
   );
 };
 
-const spin = (index, length) => {
-  const degreesPerIndex = 360 / length;
-  return 270 - degreesPerIndex * index;
-};
-
 export const Directory = ({ name, contents, fileRadius }) => {
   if (R.isEmpty(contents)) {
     return '';
@@ -87,12 +82,7 @@ export const Directory = ({ name, contents, fileRadius }) => {
           radius={fileContainerRadius}
           heightOffset={platformHeight / 2}
           contents={files.map((file, index, { length }) => (
-            <File
-              file={file}
-              radius={fileRadius}
-              spin={spin(index, length)}
-              height={platformHeight}
-            />
+            <File file={file} radius={fileRadius} height={platformHeight} />
           ))}
         />
       </Platform>
@@ -116,12 +106,7 @@ export const Directory = ({ name, contents, fileRadius }) => {
           radius={innerRadius}
           heightOffset={platformHeight / 2}
           contents={files.map((file, index, { length }) => (
-            <File
-              file={file}
-              radius={fileRadius}
-              spin={spin(index, length)}
-              height={platformHeight}
-            />
+            <File file={file} radius={fileRadius} height={platformHeight} />
           ))}
         />
         <CircleLayout
@@ -129,7 +114,7 @@ export const Directory = ({ name, contents, fileRadius }) => {
           heightOffset={platformHeight / 2}
           contents={directories.map((directory, index, { length }) => {
             return (
-              <a-entity rotation={{ y: spin(index, length) }}>
+              <a-entity>
                 <Directory
                   contents={directory.children}
                   fileRadius={fileRadius}
