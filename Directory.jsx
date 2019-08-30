@@ -4,6 +4,8 @@ import * as R from 'ramda';
 import Bricks from './bricks.jpg';
 import Blob from './blob.png';
 
+const FILE_RADIUS = 0.1;
+
 const fire = {
   'spe-particles': `texture: ${Blob}; color: yellow, red; color-spread: green; distribution: sphere; radius: .1; particle-count: 10; velocity: 1; velocity-spread: 2; drag: 1; max-age: .5; acceleration:1; size: 1,.2; randomize-position: true`
 };
@@ -27,13 +29,18 @@ const File = ({ file, radius, height }) => {
 const CircleLayout = ({ contents, radius, heightOffset }) => {
   if (contents.length === 1) {
     return (
-      <a-entity position={{ y: heightOffset }} rotation={{ y: -90 }}>
+      <a-entity
+        class="single-circle-layout"
+        position={{ y: heightOffset }}
+        rotation={{ y: -90 }}
+      >
         {contents}
       </a-entity>
     );
   }
   return (
     <a-entity
+      class="circle-layout"
       layout={{ type: 'circle', radius, plane: 'xz' }}
       position={{ y: heightOffset }}
       rotation={{ y: -90 }}
@@ -58,62 +65,33 @@ const Platform = ({ children, radius, height }) => {
   );
 };
 
-export const Directory = ({ name, contents, fileRadius }) => {
+const Item = props => {
+  if (props.type === 'file') {
+    return <File {...props} />;
+  } else if (props.type === 'directory') {
+    return <Directory {...props} />;
+  }
+};
+
+export const Directory = ({ name, contents }) => {
   if (R.isEmpty(contents)) {
     return '';
   }
-  const files = contents.filter(({ type }) => type === 'file');
-  const directories = contents.filter(({ type }) => type === 'directory');
 
-  const extraPadding = 0.2;
+  const extraPadding = 0.1;
   const platformHeight = 1;
 
-  if (R.isEmpty(directories)) {
-    const fileContainerRadius =
-      RadiusMath.containerRadius(files.length) * fileRadius;
-    const radius = fileContainerRadius + extraPadding;
-    return (
-      <Platform radius={radius} height={platformHeight}>
-        <CircleLayout
-          radius={fileContainerRadius}
-          heightOffset={platformHeight / 2}
-          contents={files.map((file, index, { length }) => (
-            <File file={file} radius={fileRadius} height={platformHeight} />
-          ))}
-        />
-      </Platform>
-    );
-  }
-
-  const filePadding = fileRadius + extraPadding;
-  const innerRadius =
-    RadiusMath.directoryRadius(directories) * fileRadius +
-    fileRadius +
-    extraPadding * 2;
+  const innerRadius = RadiusMath.directoryRadius(contents) * FILE_RADIUS;
 
   return (
-    <a-entity position={{ z: innerRadius }}>
-      <Platform radius={innerRadius + filePadding} height={platformHeight}>
+    <a-entity class="directory-container" log="test">
+      <Platform radius={innerRadius} height={platformHeight}>
         <CircleLayout
           radius={innerRadius}
           heightOffset={platformHeight / 2}
-          contents={files.map((file, index, { length }) => (
-            <File file={file} radius={fileRadius} height={platformHeight} />
+          contents={contents.map(props => (
+            <Item {...props} height={platformHeight} radius={innerRadius} />
           ))}
-        />
-        <CircleLayout
-          radius={innerRadius}
-          heightOffset={platformHeight / 2}
-          contents={directories.map((directory, index, { length }) => {
-            return (
-              <a-entity>
-                <Directory
-                  contents={directory.contents}
-                  fileRadius={fileRadius}
-                />
-              </a-entity>
-            );
-          })}
         />
       </Platform>
     </a-entity>

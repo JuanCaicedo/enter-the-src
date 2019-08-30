@@ -3,16 +3,16 @@ import * as RadiusMath from './radius';
 describe('directoryRadius', () => {
   describe('returns size for files if no directories', () => {
     it('1 file', () => {
-      const children = [
+      const contents = [
         {
           type: 'file'
         }
       ];
-      expect(RadiusMath.directoryRadius(children)).toEqual(1);
+      expect(RadiusMath.directoryRadius(contents)).toEqual(1);
     });
 
     it('2 files', () => {
-      const children = [
+      const contents = [
         {
           type: 'file'
         },
@@ -21,28 +21,28 @@ describe('directoryRadius', () => {
         }
       ];
       const expected = 2;
-      expect(RadiusMath.directoryRadius(children)).toEqual(expected);
+      expect(RadiusMath.directoryRadius(contents)).toEqual(expected);
     });
   });
 
   describe('returns size for subdirectories', () => {
     it('1 file', () => {
-      const children = [
+      const contents = [
         {
           type: 'directory',
-          children: [{ type: 'file' }]
+          contents: [{ type: 'file' }]
         }
       ];
-      const actual = RadiusMath.directoryRadius(children);
+      const actual = RadiusMath.directoryRadius(contents);
       const expected = 1;
       expect(actual).toEqual(expected);
     });
 
     it('2 files', () => {
-      const children = [
+      const contents = [
         {
           type: 'directory',
-          children: [
+          contents: [
             {
               type: 'file'
             },
@@ -53,14 +53,14 @@ describe('directoryRadius', () => {
         }
       ];
       const expected = 2;
-      expect(RadiusMath.directoryRadius(children)).toEqual(expected);
+      expect(RadiusMath.directoryRadius(contents)).toEqual(expected);
     });
 
     it('3 files', () => {
-      const children = [
+      const contents = [
         {
           type: 'directory',
-          children: [
+          contents: [
             {
               type: 'file'
             },
@@ -74,47 +74,49 @@ describe('directoryRadius', () => {
         }
       ];
       const expected = 2.1547005383792497;
-      expect(RadiusMath.directoryRadius(children)).toEqual(expected);
+      expect(RadiusMath.directoryRadius(contents)).toEqual(expected);
     });
 
     it('2 directories', () => {
-      const children = [
+      const contents = [
         {
           type: 'directory',
-          children: [{ type: 'file' }]
+          contents: [{ type: 'file' }]
         },
         {
           type: 'directory',
-          children: [{ type: 'file' }]
+          contents: [{ type: 'file' }]
         }
       ];
-      const actual = RadiusMath.directoryRadius(children);
+      const actual = RadiusMath.directoryRadius(contents);
       const expected = 2;
       expect(actual).toEqual(expected);
     });
 
-    it('returns size only for directory children', () => {
-      const children = [
+    it('returns size based on largest child', () => {
+      const directoryContents = [
+        {
+          type: 'file'
+        },
+        {
+          type: 'file'
+        },
+        {
+          type: 'file'
+        }
+      ];
+      const contents = [
         {
           type: 'file'
         },
         {
           type: 'directory',
-          children: [
-            {
-              type: 'file'
-            },
-            {
-              type: 'file'
-            },
-            {
-              type: 'file'
-            }
-          ]
+          contents: directoryContents
         }
       ];
-      const expected = 2.1547005383792497;
-      expect(RadiusMath.directoryRadius(children)).toEqual(expected);
+      expect(RadiusMath.directoryRadius(contents)).toEqual(
+        2 * RadiusMath.directoryRadius(directoryContents)
+      );
     });
   });
 });

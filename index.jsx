@@ -38,7 +38,7 @@ aframe.registerComponent('load-tree', {
     const fileRadius = 0.1;
 
     sceneEl.appendChild(
-      <a-entity position={{ z: -5 }}>
+      <a-entity position={{ z: -3 }}>
         <Directory
           contents={directory.contents}
           name={directory.name}
