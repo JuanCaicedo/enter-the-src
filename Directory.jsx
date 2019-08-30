@@ -108,7 +108,7 @@ export const Directory = ({ name, contents, fileRadius }) => {
             return (
               <a-entity>
                 <Directory
-                  contents={directory.children}
+                  contents={directory.contents}
                   fileRadius={fileRadius}
                 />
               </a-entity>
