@@ -7,6 +7,18 @@ import './particles';
 import treeFixture from './tree-fixture';
 import { Directory } from './Directory';
 
+aframe.registerComponent('raise-by-height', {
+  init() {
+    const position = this.el.getAttribute('position');
+    const height = this.el.getAttribute('height');
+    this.el.setAttribute('position', {
+      x: position.x,
+      y: position.y + height / 2,
+      z: position.z
+    });
+  }
+});
+
 aframe.registerComponent('center-geometry', {
   update() {
     // Set timeout because we need to wait for this to be loaded

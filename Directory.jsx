@@ -12,7 +12,7 @@ const File = ({ file, radius, height }) => {
   return (
     <a-entity class="fileContainer">
       <a-cone
-        position={{ y: height / 2 }}
+        raise-by-height
         color="darkgreen"
         src={Bricks}
         radius-bottom={radius}
@@ -43,15 +43,15 @@ const CircleLayout = ({ contents, radius, heightOffset }) => {
   );
 };
 
-const Platform = ({ children, radius, height, heightOffset }) => {
+const Platform = ({ children, radius, height }) => {
   return (
     <a-cylinder
       color="cyan"
+      raise-by-height
       height={height}
       radius={radius}
       src={Bricks}
       repeat="20 6"
-      position={{ y: heightOffset }}
     >
       {children}
     </a-cylinder>
@@ -73,11 +73,7 @@ export const Directory = ({ name, contents, fileRadius }) => {
       RadiusMath.containerRadius(files.length) * fileRadius;
     const radius = fileContainerRadius + extraPadding;
     return (
-      <Platform
-        radius={radius}
-        height={platformHeight}
-        heightOffset={platformHeight / 2}
-      >
+      <Platform radius={radius} height={platformHeight}>
         <CircleLayout
           radius={fileContainerRadius}
           heightOffset={platformHeight / 2}
@@ -97,11 +93,7 @@ export const Directory = ({ name, contents, fileRadius }) => {
 
   return (
     <a-entity position={{ z: innerRadius }}>
-      <Platform
-        radius={innerRadius + filePadding}
-        height={platformHeight}
-        heightOffset={platformHeight / 2}
-      >
+      <Platform radius={innerRadius + filePadding} height={platformHeight}>
         <CircleLayout
           radius={innerRadius}
           heightOffset={platformHeight / 2}
