@@ -17,7 +17,7 @@ const File = ({ file, radius, height }) => {
         raise-by-height
         color="darkgreen"
         src={Bricks}
-        radius-bottom={radius}
+        radius-bottom={FILE_RADIUS}
         radius-top={0}
         height={height}
         {...fire}
