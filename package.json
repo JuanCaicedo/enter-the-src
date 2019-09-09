@@ -12,6 +12,7 @@
   "license": "ISC",
   "dependencies": {
     "aframe": "^0.9.2",
+    "aframe-layout-component": "^5.3.0",
     "aframe-text-geometry-component": "^0.5.1",
     "jsx-dom": "^6.3.1",
     "parcel-bundler": "^1.12.3",
